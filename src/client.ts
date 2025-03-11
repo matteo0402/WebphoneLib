@@ -127,13 +127,14 @@ export interface IClient {
    * When a session is added to the sessions by an incoming or outgoing
    * call, a sessionAdded event is emitted.
    */
-  on(event: 'sessionAdded', listener: ({ id }) => void): this;
+  on(event: 'sessionAdded', listener: (session: ISession) => void): this;
 
   /**
    * When a session is removed because it is terminated  a sessionRemoved event
    * is emitted.
    */
-  on(event: 'sessionRemoved', listener: ({ id }) => void): this;
+  on(event: 'sessionRemoved', listener: (session: ISession) => void): this;
+
   /* tslint:enable:unified-signatures */
 }
 
@@ -472,13 +473,13 @@ export class ClientImpl extends EventEmitter implements IClient {
 
   private addSession(session: SessionImpl) {
     this.sessions[session.id] = session;
-    this.emit('sessionAdded', { id: session.id });
+    this.emit('sessionAdded', session.freeze());
     this.updatePriority();
   }
 
   private removeSession(session: SessionImpl) {
     delete this.sessions[session.id];
-    this.emit('sessionRemoved', { id: session.id });
+    this.emit('sessionRemoved', session.freeze());
     this.updatePriority();
   }
 
