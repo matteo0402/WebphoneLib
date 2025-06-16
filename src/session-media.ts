@@ -209,6 +209,8 @@ export class SessionMedia extends EventEmitter implements ISessionMedia {
     }
 
     this.media.input.muted = newMuted;
+    console.log('input muted', newMuted);
+    this.emit('muteUpdate', newMuted);
   }
 
   private setOutputDevice(id: string | undefined) {

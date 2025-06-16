@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 import pTimeout from 'p-timeout';
 
-import { Core, IncomingResponse, SessionDescriptionHandlerModifiers } from 'sip.js';
+import { Core, SessionDescriptionHandlerModifiers } from 'sip.js';
 
 import { Invitation } from 'sip.js/lib/api/invitation';
+import { InvitationRejectOptions } from 'sip.js/lib/api/invitation-reject-options';
 import { Inviter } from 'sip.js/lib/api/inviter';
 import { InviterInviteOptions } from 'sip.js/lib/api/inviter-invite-options';
-import { InvitationRejectOptions } from 'sip.js/lib/api/invitation-reject-options';
 import { Referrer } from 'sip.js/lib/api/referrer';
 import { Session as UserAgentSession } from 'sip.js/lib/api/session';
 import { SessionState } from 'sip.js/lib/api/session-state';
@@ -69,7 +69,9 @@ export interface ISession {
   endTime: any;
 
   accept(): Promise<ISessionAccept | void>;
+
   reject(rejectOptions?: InvitationRejectOptions): Promise<void>;
+
   /**
    * Terminate the session.
    */
@@ -103,6 +105,7 @@ export interface ISession {
    * @param {string} target - Number to transfer to.
    */
   blindTransfer(target: string): Promise<boolean>;
+
   bye(): void;
 
   /**
@@ -113,12 +116,18 @@ export interface ISession {
 
   /* tslint:disable:unified-signatures */
   on(event: 'terminated', listener: ({ id: string }) => void): this;
+
   on(event: 'statusUpdate', listener: (session: { id: string; status: string }) => void): this;
+
+  on(event: 'muteUpdate', listener: ({ newMuted: boolean }) => void): this;
+
   on(event: 'callQualityUpdate', listener: ({ id: string }, stats: SessionStats) => void): this;
+
   on(
     event: 'remoteIdentityUpdate',
     listener: ({ id: string }, remoteIdentity: IRemoteIdentity) => void
   ): this;
+
   /* tslint:enable:unified-signatures */
 }
 
