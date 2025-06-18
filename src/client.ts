@@ -135,6 +135,12 @@ export interface IClient {
    */
   on(event: 'sessionRemoved', listener: (session: ISession) => void): this;
 
+  /**
+   *
+   * When the client's status is updated, the status event is emitted
+   */
+  on(event: 'status', listener: (status: ClientStatus) => void): this;
+
   /* tslint:enable:unified-signatures */
 }
 
@@ -177,14 +183,23 @@ export class ClientImpl extends EventEmitter implements IClient {
     await this.connect();
   }
 
-  public connect(): Promise<boolean> {
-    return this.transport.connect();
+  public async connect(): Promise<boolean> {
+    this.emit('status', ClientStatus.CONNECTING);
+    const connected = this.transport.connect();
+    await connected;
+    if (!connected) {
+      return false;
+    }
+    this.emit('status', ClientStatus.CONNECTED);
+    return true;
   }
 
   public async disconnect(): Promise<void> {
     // Actual unsubscribing is done in ua.stop
+    this.emit('status', ClientStatus.DISCONNECTING);
     await this.transport.disconnect({ hasRegistered: true });
     this.subscriptions = {};
+    this.emit('status', ClientStatus.DISCONNECTED);
   }
 
   public isConnected(): boolean {
