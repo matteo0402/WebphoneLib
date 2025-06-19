@@ -16,7 +16,7 @@ function getPropertyDescriptor(obj: any, name: string) {
  * @hidden
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function createFrozenProxy<T>(obj: object, impl: T, properties: string[]): T {
+export function createFrozenProxy<T>(obj: object, impl: T, properties: string[]): Readonly<object> {
   const missingDescriptors = properties.filter(
     name => getPropertyDescriptor(impl, name) === undefined
   );

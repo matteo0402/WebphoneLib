@@ -115,17 +115,20 @@ export interface ISession {
   dtmf(tones: string): void;
 
   /* tslint:disable:unified-signatures */
-  on(event: 'terminated', listener: ({ id: string }) => void): this;
+  on(event: 'terminated', listener: ({ id }: { id: string }) => void): this;
 
   on(event: 'statusUpdate', listener: (session: { id: string; status: string }) => void): this;
 
-  on(event: 'muteUpdate', listener: ({ newMuted: boolean }) => void): this;
+  on(event: 'muteUpdate', listener: ({ newMuted }: { newMuted: boolean }) => void): this;
 
-  on(event: 'callQualityUpdate', listener: ({ id: string }, stats: SessionStats) => void): this;
+  on(
+    event: 'callQualityUpdate',
+    listener: ({ id }: { id: string }, stats: SessionStats) => void
+  ): this;
 
   on(
     event: 'remoteIdentityUpdate',
-    listener: ({ id: string }, remoteIdentity: IRemoteIdentity) => void
+    listener: ({ id }: { id: string }, remoteIdentity: IRemoteIdentity) => void
   ): this;
 
   /* tslint:enable:unified-signatures */
@@ -389,42 +392,44 @@ export class SessionImpl extends EventEmitter implements ISession {
   }
 
   public freeze(): ISession {
-    return createFrozenProxy({}, this, [
-      'audioConnected',
-      'autoAnswer',
-      'endTime',
-      'holdState',
-      'id',
-      'isIncoming',
-      'media',
-      'phoneNumber',
-      'remoteIdentity',
-      'saidBye',
-      'startTime',
-      'stats',
-      'status',
-      'accept',
-      'accepted',
-      'attendedTransfer',
-      'blindTransfer',
-      'bye',
-      'dtmf',
-      'freeze',
-      'hold',
-      'reinvite',
-      'reject',
-      'terminate',
-      'terminated',
-      'unhold',
-      'on',
-      'once',
-      'removeAllListeners',
-      'removeListener',
-      'cancel',
-      'tried',
-      'localStream',
-      'remoteStream'
-    ]);
+    return <ISession>(
+      createFrozenProxy({}, this, [
+        'audioConnected',
+        'autoAnswer',
+        'endTime',
+        'holdState',
+        'id',
+        'isIncoming',
+        'media',
+        'phoneNumber',
+        'remoteIdentity',
+        'saidBye',
+        'startTime',
+        'stats',
+        'status',
+        'accept',
+        'accepted',
+        'attendedTransfer',
+        'blindTransfer',
+        'bye',
+        'dtmf',
+        'freeze',
+        'hold',
+        'reinvite',
+        'reject',
+        'terminate',
+        'terminated',
+        'unhold',
+        'on',
+        'once',
+        'removeAllListeners',
+        'removeListener',
+        'cancel',
+        'tried',
+        'localStream',
+        'remoteStream'
+      ])
+    );
   }
 
   protected makeInviteOptions({
